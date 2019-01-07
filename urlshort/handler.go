@@ -30,12 +30,16 @@ func YAMLHandler(yamlBytes []byte, fallback http.Handler) (http.HandlerFunc, err
 	if err != nil {
 		return nil, err
 	}
-	//2. build map from array
+	pathsToUrls := buildMap(pathUrls)
+	return MapHandler(pathsToUrls, fallback), nil
+}
+
+func buildMap(pathUrls []pathURL) map[string]string {
 	pathsToUrls := make(map[string]string)
 	for _, pathURL := range pathUrls {
 		pathsToUrls[pathURL.Path] = pathURL.URL
 	}
-	return MapHandler(pathsToUrls, fallback), nil
+	return pathsToUrls
 }
 
 type pathURL struct {
