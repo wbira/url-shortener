@@ -25,13 +25,18 @@ func MapHandler(pathsToUrls map[string]string, fallback http.Handler) http.Handl
 // YAMLHandler will parse the provided YAML and then return
 // an http.HandlerFunc
 func YAMLHandler(yamlBytes []byte, fallback http.Handler) (http.HandlerFunc, error) {
-	var pathUrls []pathURL
-	err := yaml.Unmarshal(yamlBytes, &pathUrls)
+	parsedYaml, err := parseYAML(yamlBytes)
 	if err != nil {
 		return nil, err
 	}
-	pathsToUrls := buildMap(pathUrls)
+	pathsToUrls := buildMap(parsedYaml)
 	return MapHandler(pathsToUrls, fallback), nil
+}
+
+func parseYAML(yamlBytes []byte) ([]pathURL, error) {
+	var pathUrls []pathURL
+	err := yaml.Unmarshal(yamlBytes, &pathUrls)
+	return pathUrls, err
 }
 
 func buildMap(pathUrls []pathURL) map[string]string {
