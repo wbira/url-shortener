@@ -33,10 +33,28 @@ func YAMLHandler(yamlBytes []byte, fallback http.Handler) (http.HandlerFunc, err
 	return MapHandler(pathsToUrls, fallback), nil
 }
 
+// JSONHandler will parse the provided JSON and then return and http.HandlerFunc
+func JSONHandler(jsonBytes []byte, fallback http.Handler) (http.HandlerFunc, error) {
+	parsedJSON, err := parseJSON(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	pathToUrls := buildMap(parsedJSON)
+	return MapHandler(pathToUrls, fallback), nil
+}
+
+func parseJSON(jsonBytes []byte) ([]pathURL, error) {
+	var pathUrls []pathURL
+	return pathUrls, nil
+}
+
 func parseYAML(yamlBytes []byte) ([]pathURL, error) {
 	var pathUrls []pathURL
 	err := yaml.Unmarshal(yamlBytes, &pathUrls)
-	return pathUrls, err
+	if err != nil {
+		return nil, err
+	}
+	return pathUrls, nil
 }
 
 func buildMap(pathUrls []pathURL) map[string]string {
