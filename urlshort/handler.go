@@ -1,6 +1,7 @@
 package urlshort
 
 import (
+	"encoding/json"
 	"net/http"
 
 	yaml "gopkg.in/yaml.v2"
@@ -45,6 +46,10 @@ func JSONHandler(jsonBytes []byte, fallback http.Handler) (http.HandlerFunc, err
 
 func parseJSON(jsonBytes []byte) ([]pathURL, error) {
 	var pathUrls []pathURL
+	err := json.Unmarshal(jsonBytes, &pathUrls)
+	if err != nil {
+		return nil, err
+	}
 	return pathUrls, nil
 }
 
